@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+            overflow: hidden; 
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        main {
+            margin-bottom: 20px; 
+        }
+
+        .card-container {
+            perspective: 1500px;
+        }
+
+        .wish-card {
+            width: 550px; 
+            max-width: 100%; 
+            height: 500px; 
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 20px;
+        }
+
+        .wish-card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background: #fdfaea;
+            border: 1px solid #e0dccc;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .postcard-header {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.5rem;
+            text-align: center;
+            color: #555;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 10px;
+        }
+
+        .postcard-body {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5rem;
+            color: #d9534f;
+            transform: rotate(-5deg);
+            text-align: center;
+        }
+        
+        .postcard-footer {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.2rem;
+            color: #777;
+            text-align: right;
+        }
+
+        .doodle-sticker {
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            background: #ffffff;
+            border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+            border: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.5rem;
+            color: #d9534f;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        .doodle-1 {
+            top: 25px;
+            left: 20px;
+            transform: rotate(-20deg);
+            padding-top: 5px;
+            line-height: 1;
+        }
+
+        .doodle-2 {
+            bottom: 90px;
+            right: 25px;
+            background: #fff7b3;
+            transform: rotate(15deg);
+            font-size: 2.5rem;
+            border-radius: 60% 40% 50% 50% / 45% 55% 45% 55%;
+        }
+
+        .card-back {
+            background: #ffffff;
+            transform: rotateY(180deg);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+        }
+
+        .wish-content {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.6rem; 
+            line-height: 1.6;
+            color: #2c3e50;
+            text-align: center; 
+        }
+
+        .wish-content h3 {
+            font-family: 'Pacifico', cursive;
+            color: #e74c3c;
+            font-size: 2.2rem;
+            margin-top: 0;
+        }
+        
+        .celebration-container {
+            text-align: center;
+            margin-top: 25px; 
+        }
+
+        #celebrateButton {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 12px 25px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #celebrateButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        #celebrateButton:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .wish-card {
+                width: 95vw;
+                height: 480px;
+            }
+
+            .wish-content {
+                font-size: 1.2rem; 
+            }
+
+            .wish-content h3 {
+                font-size: 1.8rem;
+            }
+
+            .doodle-sticker {
+                width: 65px;
+                height: 65px;
+                font-size: 1.2rem;
+            }
+            .doodle-sticker.doodle-2 {
+                font-size: 2rem;
+            }
+            
+            .celebration-container {
+                margin-top: 20px;
+            }
+            #celebrateButton {
+                font-size: 1.3rem;
+                padding: 10px 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Happy Birthday, Priyankaaa💫</h1>
+    </header>
+
+    <main>
+        <div class="card-container">
+            
+            <div class="wish-card" id="birthdayCard">
+                
+                <div class="card-face card-front">
+                    <div class="postcard-header">A Gift of Smiles, Made for You 🌸</div>
+                    <div class="postcard-body">
+                        <p>Click me to open!</</p>
+                    </div>
+                    <div class="postcard-footer">
+                        <p>From, 👉🙂</p>
+                    </div>
+                    
+                    <div class="doodle-sticker doodle-1">Woo!</div>
+                    <div class="doodle-sticker doodle-2">🎉</div>
+
+                </div>
+                
+                <div class="card-face card-back">
+                    
+                    <div class="wish-content">
+                        <h3>Dear Priyankaaa💫,</h3>
+                        <p>🌸Wishing you a day where the morning sun greets you with warmth, where every breeze carries a whisper of happiness, and every little moment feels like a gift just for you. May your laughter sound like music, your smile light up the hours, and your heart feel surrounded by love in every detail of the day. May the smallest things — a kind word, a gentle glance, a sweet memory — turn into treasures, making this day not just special, but unforgettable.🌸
+                        <br><br>
+                        Cheers to another amazing year!
+                        </Half-Heart>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+
+        <div class="celebration-container">
+            <button id="celebrateButton">🎉 Click for a Surprise! 🎉</button>
+        </div>
+    </main>
+
+    <script>
+        const card = document.getElementById('birthdayCard');
+        const celebrateBtn = document.getElementById('celebrateButton');
+        card.addEventListener('click', function() {
+            card.classList.toggle('is-flipped');
+        });
+
+        celebrateBtn.addEventListener('click', startCelebration);
+
+        function startCelebration() {
+            const themeColors = ['#ff9a9e', '#fecfef', '#ffffff', '#e74c3c'];
+
+            function launchConfetti(origin) {
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: origin,
+                    colors: themeColors,
+                    disableForReducedMotion: true
+                });
+            }
+
+            function launchEmojis() {
+                confetti({
+                    particleCount: 50,
+                    spread: 100,
+                    origin: { x: 0.5, y: 0.4 },
+                    shapes: ['🌸', '🌺', '✨', '💫'],
+                    scalar: 2.0, 
+                    disableForReducedMotion: true
+                });
+            }
+
+            launchConfetti({ x: 0.1, y: 0.7 });
+            setTimeout(() => launchConfetti({ x: 0.9, y: 0.7 }), 200);
+            setTimeout(launchEmojis, 400);
+            setTimeout(() => {
+                confetti({
+                    particleCount: 200,
+                    spread: 120,
+                    origin: { x: 0.5, y: 0.5 },
+                    colors: themeColors,
+                    disableForReducedMotion: true
+                });
+            }, 600);
+        }
+
+    </script>
+
+</body>
+</html>
